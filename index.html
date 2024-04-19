@@ -25,6 +25,7 @@
             border-radius: 10px; /* Add border radius to form */
             background-color: #333; /* Add a darker background color to the form */
             padding: 20px; /* Add padding inside the form */
+            position: relative; /* Add position relative to enable absolute positioning */
         }
 
         .box label {
@@ -60,6 +61,36 @@
             display: inline-block; /* Make accuracy spans display inline */
         }
 
+        .info-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            z-index: 999; /* Ensure the icon is on top of other elements */
+        }
+
+        .info-icon::before {
+            content: "?";
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .info-tooltip {
+            position: absolute;
+            top: 30px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            display: none;
+            z-index: 999; /* Ensure the tooltip is on top of other elements */
+        }
+
+        .info-icon:hover + .info-tooltip {
+            display: block;
+        }
+
         .credits {
             position: fixed;
             bottom: 10px;
@@ -73,6 +104,10 @@
 <body>
     <div class="container">
         <div class="box">
+            <!-- Information icon and tooltip -->
+            <span class="info-icon" title="Make sure to use a custom judgement setup for OD9 in quaver before using the converter!"></span>
+            <div class="info-tooltip">Make sure to use a custom judgement setup for OD9 in quaver before using the converter!</div>
+            
             <form id="form" method="get">
                 <div>
                     <label for="marv">Marvelous:</label>
