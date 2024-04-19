@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>QuaverToOsuCalc</title>
+
+    <style>
+        body {
+            background-color: #424549;
+            color: white; /* Set body text color to white */
+            font-family: Arial, sans-serif; /* Set a default font family */
+            margin: 0; /* Remove default margin */
+            padding: 20px; /* Add some padding for better spacing */
+        }
+
+        .container {
+            width: 500px; /* Set the width of the container */
+            margin: 0 auto; /* Center the container horizontally */
+        }
+
+        .box {
+            margin-bottom: 20px;
+            border-radius: 10px; /* Add border radius to form */
+            background-color: #333; /* Add a darker background color to the form */
+            padding: 20px; /* Add padding inside the form */
+        }
+
+        .box label {
+            display: block;
+            margin-bottom: 5px; /* Add some space between labels and inputs */
+        }
+
+        .box input[type="number"] {
+            width: 100px; /* Set a fixed width for number inputs */
+            padding: 5px; /* Add padding for better appearance */
+            border-radius: 5px; /* Add border radius to input fields */
+            border: none; /* Remove default border */
+        }
+
+        .box button {
+            padding: 10px 20px; /* Add padding to the button */
+            background-color: #007bff; /* Set button background color */
+            color: white; /* Set button text color to white */
+            border: none; /* Remove default border */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            border-radius: 5px; /* Add border radius to button */
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.66); /* Add box shadow */
+            margin-top: 10px; /* Add margin-top */
+        }
+
+        .box button:hover {
+            background-color: #0056b3; /* Darken button color on hover */
+        }
+
+        .box #acc,
+        .box #acc2 {
+            margin-top: 10px; /* Add some space between accuracy spans and the button */
+            display: inline-block; /* Make accuracy spans display inline */
+        }
+
+        .credits {
+            position: fixed;
+            bottom: 10px;
+            left: 20px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="box">
+            <form id="form" method="get">
+                <div>
+                    <label for="marv">Marvelous:</label>
+                    <input type="number" id="marv" name="marv" value="0" required>
+                </div>
+                <div>
+                    <label for="perf">Perfect:</label>
+                    <input type="number" id="perf" name="perf" value="0" required>
+                </div>
+                <div>
+                    <label for="great">Great:</label>
+                    <input type="number" id="great" name="great" value="0" required>
+                </div>
+                <div>
+                    <label for="good">Good:</label>
+                    <input type="number" id="good" name="good" value="0" required>
+                </div>
+                <div>
+                    <label for="bad">Bad:</label>
+                    <input type="number" id="bad" name="bad" value="0" required>
+                </div>
+                <div>
+                    <label for="miss">Misses:</label>
+                    <input type="number" id="miss" name="miss" value="0" required>
+                </div>
+                <div>
+                    <button onclick="calc()">Calculate</button>
+                </div>
+                <div>
+                    Accuracy: <span id="acc">0.000%</span>
+                </div>
+                <div>
+                    Accuracy v2: <span id="acc2">0.000%</span>
+                </div>
+            </form>
+        </div>
+
+        <div class="box">
+            <form id="accuracyForm" method="get">
+                <div>
+                    <label for="performanceRating">Performance Rating:</label>
+                    <input type="number" id="performanceRating" name="performanceRating" value="0" step="0.001" min="0" required>
+                </div>
+                <div>
+                    <label for="difficulty">Difficulty Rating:</label>
+                    <input type="number" id="difficulty" name="difficulty" value="0" step="0.001" min="0" required>
+                </div>
+                <div>
+                    <button onclick="calculateAccuracyNeeded()">Calculate</button>
+                </div>
+                <div>
+                    Accuracy Needed: <span id="accuracyNeeded">0</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="credits">
+        <p>Zails: Original Calculator, Some Changes To HTML, JS, And CSS</p>
+        <p>AiAe: HTML + JS</p>
+        <p>cyphemercury: CSS Code Snippets</p>
+    </div>
+
+    <script>
+        function calculateAccuracyNeeded() {
+            event.preventDefault();
+
+            var performanceRating = parseFloat(document.getElementById('performanceRating').value);
+            var difficultyRating = parseFloat(document.getElementById('difficulty').value);
+
+            var accuracyNeeded = 98 * Math.pow(performanceRating / difficultyRating, 1 / 6);
+
+            document.getElementById('accuracyNeeded').textContent = accuracyNeeded.toFixed(3);
+        }
+
+        function calc() {
+            event.preventDefault();
+
+            var form = document.getElementById('form');
+            var data = new FormData(form);
+
+            let total = 0;
+            let d = [];
+            let sc2 = false;
+
+            for (var [key, value] of data) {
+                value = value.trim() === "" ? 0 : parseInt(value); // Replace empty values with 0
+                d.push(value);
+                total += value;
+            }
+
+            if (total === 0) {
+                document.getElementById('acc').innerHTML = "0.000%";
+                document.getElementById('acc2').innerHTML = "0.000%";
+                return;
+            }
+
+            const mc = d[0] * 1;
+            const pc = d[1] * 1;
+            const pc2 = pc * (300/305);
+            const gc = d[2] * (2/3);
+            const oc = d[3] * (1/3);
+            const bc = d[4] * (1/6);
+            const mi = d[5] * 0;
+
+            let acc = ((mc + pc + gc + oc + bc + mi) / total).toFixed(5);
+            let acc2 = ((mc + pc2 + gc + oc + bc + mi) / total).toFixed(5);
+
+            document.getElementById('acc').innerHTML = (acc * 100).toFixed(3) + "%";
+            document.getElementById('acc2').innerHTML = (acc2 * 100).toFixed(3) + "%";
+        }
+    </script>
+</body>
+
+</html>
