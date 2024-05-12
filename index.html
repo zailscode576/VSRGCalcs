@@ -98,6 +98,45 @@
             font-size: 14px;
             opacity: 0.7;
         }
+
+        /* Dropdown CSS */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .dropdown-content form {
+            margin-bottom: 0; /* Remove bottom margin of form inside dropdown */
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.66);
+            margin-top: 10px;
+        }
+
+        .dropdown button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
@@ -163,6 +202,29 @@
                 </div>
             </form>
         </div>
+
+        <!-- New box for OD Calculator -->
+        <div class="box">
+            <div class="dropdown">
+                <button onclick="toggleODCalculator()">OD Calculator</button>
+                <div class="dropdown-content" id="odCalculatorContent">
+                    <form id="odCalculatorForm" method="get">
+                        <!-- Form inputs for OD Calculator -->
+                        <div>
+                            <label for="odInput">Enter OD:</label>
+                            <input type="number" id="odInput" name="odInput" step="0.1" required>
+                        </div>
+                        <div>
+                            <button onclick="calculateODValues()">Calculate</button>
+                        </div>
+                        <div>
+                            <p>Results:</p>
+                            <ul id="odResultsList"></ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="credits">
@@ -218,6 +280,32 @@
 
             document.getElementById('acc').innerHTML = (acc * 100).toFixed(3) + "%";
             document.getElementById('acc2').innerHTML = (acc2 * 100).toFixed(3) + "%";
+        }
+
+        function calculateODValues() {
+            event.preventDefault();
+
+            var od = parseFloat(document.getElementById("odInput").value);
+
+            var MAX = 16;
+            var val300 = (64 - 3 * od).toFixed(1);
+            var val200 = (97 - 3 * od).toFixed(1);
+            var val100 = (127 - 3 * od).toFixed(1);
+            var val50 = (151 - 3 * od).toFixed(1);
+
+            var resultsList = document.getElementById("odResultsList");
+            resultsList.innerHTML = ""; // Clear previous results
+            resultsList.innerHTML += "<li>MAX: " + MAX + "</li>";
+            resultsList.innerHTML += "<li>300: " + val300 + "</li>";
+            resultsList.innerHTML += "<li>200: " + val200 + "</li>";
+            resultsList.innerHTML += "<li>100: " + val100 + "</li>";
+            resultsList.innerHTML += "<li>50: " + val50 + "</li>";
+        }
+
+        // Add function to toggle OD Calculator dropdown
+        function toggleODCalculator() {
+            var dropdownContent = document.getElementById("odCalculatorContent");
+            dropdownContent.style.display = (dropdownContent.style.display === "block") ? "none" : "block";
         }
     </script>
 </body>
