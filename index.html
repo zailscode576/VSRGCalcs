@@ -143,7 +143,7 @@
     <div class="container">
         <div class="box">
             <span class="info-icon" title="Make sure to use a custom judgement setup for OD9 in quaver before using the converter!"></span>
-            <div class="info-tooltip">Make sure to use a custom judgement setup for OD9 in quaver before using the converter!</div>
+            <div class="info-tooltip">Make sure to use a custom judgement setup for OD9 in quaver before using the converter!<br> LN scores will not convert correctly!  Try to only convert scores on rice maps with few long notes.</div>
             
             <form id="form" method="get">
                 <div>
@@ -181,16 +181,16 @@
                 </div>
             </form>
         </div>
-
+<div class="box-container" style="display: flex; gap: 20px; align-items: flex-start;">
         <div class="box">
             <form id="accuracyForm" method="get">
                 <div>
                     <label for="performanceRating">Performance Rating:</label>
-                    <input type="number" id="performanceRating" name="performanceRating" value="0" step="0.001" min="0" required>
+                    <input type="number" id="performanceRating" name="performanceRating" value="0" step="0.01" min="0" required>
                 </div>
                 <div>
                     <label for="difficulty">Difficulty Rating:</label>
-                    <input type="number" id="difficulty" name="difficulty" value="0" step="0.001" min="0" required>
+                    <input type="number" id="difficulty" name="difficulty" value="0" step="0.01" min="0" required>
                 </div>
                 <div>
                     <button onclick="calculateAccuracyNeeded()">Calculate</button>
@@ -200,7 +200,25 @@
                 </div>
             </form>
         </div>
-
+<div class="box">
+    <form id="performanceRatingForm" method="get">
+        <div>
+            <label for="difficultyInput">Difficulty Rating:</label>
+            <input type="number" id="difficultyInput" name="difficultyInput" value="0" step="0.01" min="0" required>
+        </div>
+        <div>
+            <label for="accuracyInput">Accuracy (%):</label>
+            <input type="number" id="accuracyInput" name="accuracyInput" value="0" step="0.01" min="0" required>
+        </div>
+        <div>
+            <button onclick="calculatePerformanceRating()">Calculate</button>
+        </div>
+        <div>
+            Performance Rating: <span id="performanceRatingResult">0</span>
+        </div>
+    </form>
+</div>
+</div>
         <div class="box">
             <div class="dropdown">
                 <button onclick="toggleODCalculator()">OD Calculator</button>
@@ -208,7 +226,7 @@
                     <form id="odCalculatorForm" method="get">
                         <div>
                             <label for="odInput">Enter OD:</label>
-                            <input type="number" id="odInput" name="odInput" step="0.1" required>
+                            <input type="number" id="odInput" name="odInput" value="7.27" step="0.1" required> <!-- wysi -->
                         </div>
                         <div>
                             <button onclick="calculateODValues()">Calculate</button>
@@ -263,7 +281,13 @@
     </div>
 
     <div class="credits">
-        <p>HTML + JS</p>
+        <a href="https://osu.ppy.sh/users/14317057/mania" target="_blank" rel="noopener noreferrer">Zails</a>: Original Calculator, Some Changes To HTML, JS, And CSS
+    </p>
+        <a href="https://quavergame.com/user/5" target="_blank" rel="noopener noreferrer">AiAe</a>: HTML + JS
+    </p>
+        <a href="https://cyphemercury.online/" target="_blank" rel="noopener noreferrer">cyphemercury</a>: CSS Code Snippets
+    </p>
+    <p>Zumo: Exists</p>
     </div>
 
     <script>
@@ -365,6 +389,24 @@
             var dropdownContent = document.getElementById("bpmSimilarityCalculatorContent");
             dropdownContent.style.display = (dropdownContent.style.display === "block") ? "none" : "block";
         }
+
+	function calculatePerformanceRating() {
+    event.preventDefault();
+
+    const difficulty = parseFloat(document.getElementById("difficultyInput").value);
+    const accuracy = parseFloat(document.getElementById("accuracyInput").value);
+
+    if (accuracy === 0 || difficulty === 0) {
+        document.getElementById("performanceRatingResult").textContent = "N/A";
+        return;
+    }
+
+    // Formula: PerformanceRating = DifficultyRating * Math.pow(Accuracy / 98, 6)
+    const normalizedAccuracy = accuracy / 100; // Convert percentage to decimal
+    const performanceRating = (difficulty * Math.pow(normalizedAccuracy / 0.98, 6)).toFixed(3);
+
+    document.getElementById("performanceRatingResult").textContent = performanceRating;
+}
 
         function calculateBPMSimilarity() {
             event.preventDefault();
